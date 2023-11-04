@@ -1,5 +1,5 @@
 # ansible_tutorial
 
-I'm ronbary following my first ansible tutorial.
-Great ansible tutorial - (made by toutube)
+I'm ronbary my first ansible project.
+Great ansible tool
 This is my awesome Ansible repository!
