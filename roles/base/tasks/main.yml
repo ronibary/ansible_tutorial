@@ -1,0 +1,4 @@
+- name: add ssh key for idan                     # this is a task playbook
+  authorized_key: 
+   user: idan
+   key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBAofcz2ZUS5fS7vvYVkB3L5OKKRU0RosB5NmmWyvNf5 ansible"
