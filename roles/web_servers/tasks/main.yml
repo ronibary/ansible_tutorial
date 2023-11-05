@@ -1,19 +1,17 @@
-- name: install apache add php for ubuntu servers
-  tags: apache,apache2,ubuntu
+- name: install apache add php packages
+  tags: apache,apache2,php
   apt: 
     name:
-      - apache2
-      - libapache2-mod-php
+      - "{{ apache_package_name }}"
+      - "{{ php_package_name }}"
     state:  latest
-  when: ansible_distribution == "Ununtu"
 
-- name: start apache2 (Ubuntu)                             # start the service apache2
-  tags: apache,apache2,ubuntu
+- name: start and enable apache service                             # start the service apache2
+  tags: apache,apache2
   service:
-    name: apache2
+    name: "{{ apache_service }}"
     state:  started
     enabled:  yes
-  when: ansible_distribution == "Ubuntu"     
 
 - name: install apache add php for centOS servers
   tags: apache,centos,httpd
@@ -36,17 +34,10 @@
   tags: apache2,ubuntu
   lineinfile:                                                  # the lodule to change files
     path: /etc/apache2/apache2.conf                            # the file to change 
-    regexp: 'MaxKeepAliveRequests 100'                          # change the line that starts with this string
-    line: MaxKeepAliveRequests 155                    # new content to add.  
+    regexp: 'MaxKeepAliveRequests 101'                          # change the line that starts with this string
+    line: MaxKeepAliveRequests 100                    # new content to add.  
   when: ansible_distribution == "Ubuntu"  
-  register: apache_was_changed                                 # variable to capture if there was change to apache2.conf  
-
-- name: restart the apache2 service on change to apache2.conf (Ubuntu)     # restart the service apache2
-  tags: apache,apache2,ubuntu
-  service:
-    name: apache2
-    state:  restarted
-  when: apache_was_changed.changed        
+  notify: restart_apache                       # this is the handler name to run when this play changed and finished  
 
 - name: copy default html file for site
   tags: apache,apache2,httpd
