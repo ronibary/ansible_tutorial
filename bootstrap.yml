@@ -1,0 +1,44 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:                          # pre_tasks   - this section will run first before any other tasks
+
+  - name: install updates (CentOS)
+    tags: always
+    dnf:
+      update_only:  yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"  
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade:  dist
+      update_cache: yes
+    when: ansible_distribution == "Ubunto"  
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create idan user
+    tags: always
+    user:
+      name: idan
+      groups: root  
+
+  - name: add ssh key for idan
+    tags: always
+    authorized_key: 
+      user: idan
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBAofcz2ZUS5fS7vvYVkB3L5OKKRU0RosB5NmmWyvNf5 ansible"
+
+  - name: add sudoers file for idan
+    tags: always
+    copy:
+      src:  sudoer_idan
+      dest: /etc/sudoers.d/idan
+      owner:  root
+      group:  root
+      mode: 0440

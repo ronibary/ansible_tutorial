@@ -4,19 +4,29 @@
   become: true
   pre_tasks:                          # pre_tasks   - this section will run first before any other tasks
 
-  - name: install updates (CentOS)
+  - name: update repo cache (CentOS)
     tags: always
     dnf:
-      update_only:  yes
       update_cache: yes
+    changed_when: false  
     when: ansible_distribution == "CentOS"  
 
-  - name: install updates (Ubuntu)
+  - name: update repo cache (Ubuntu)
     tags: always
     apt:
-      upgrade:  dist
       update_cache: yes
+    changed_when: false  
     when: ansible_distribution == "Ubunto"  
+
+- hosts: all
+  become: true
+  tasks:
+                                             # this is a placeholder to override the ssh key if needed for idan 
+  - name: add ssh key for idan
+    tags: always
+    authorized_key: 
+      user: idan
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBAofcz2ZUS5fS7vvYVkB3L5OKKRU0RosB5NmmWyvNf5 ansible"
 
 - hosts:  workstations
   become: true
