@@ -48,6 +48,14 @@
       state:  latest
     when: ansible_distribution == "Ununtu"
 
+  - name: start apache2 (Ubuntu)                             # start the service apache2
+    tags: apache,apache2,ubuntu
+    service:
+      name: apache2
+      state:  started
+      enabled:  yes
+    when: ansible_distribution == "Ubuntu"     
+
   - name: install apache add php for centOS servers
     tags: apache,centos,httpd
     dnf: 
@@ -56,6 +64,30 @@
         - php
       state:  latest
     when: ansible_distribution == "CentOS"
+
+  - name: start httpd (CentOS)                             # start the service httpd
+    tags: apache,centos,httpd
+    service:
+      name: httpd
+      state:  started
+      enabled:  yes
+    when: ansible_distribution == "CentOS"  
+
+  - name: change Global configuration string for ubuntu apache2 configuration file
+    tags: apache2,ubuntu
+    lineinfile:                                                  # the lodule to change files
+      path: /etc/apache2/apache2.conf                            # the file to change 
+      regexp: 'MaxKeepAliveRequests 100'                          # change the line that starts with this string
+      line: MaxKeepAliveRequests 155                    # new content to add.  
+    when: ansible_distribution == "Ubuntu"  
+    register: apache_was_changed                                 # variable to capture if there was change to apache2.conf  
+
+  - name: restart the apache2 service on change to apache2.conf (Ubuntu)     # restart the service apache2
+    tags: apache,apache2,ubuntu
+    service:
+      name: apache2
+      state:  restarted
+    when: apache_was_changed.changed        
 
   - name: copy default html file for site
     tags: apache,apache2,httpd
