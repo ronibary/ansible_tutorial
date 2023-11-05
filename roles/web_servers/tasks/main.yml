@@ -34,8 +34,8 @@
   tags: apache2,ubuntu
   lineinfile:                                                  # the lodule to change files
     path: /etc/apache2/apache2.conf                            # the file to change 
-    regexp: 'MaxKeepAliveRequests 101'                          # change the line that starts with this string
-    line: MaxKeepAliveRequests 100                    # new content to add.  
+    regexp: 'MaxKeepAliveRequests 100'                          # change the line that starts with this string
+    line: MaxKeepAliveRequests 150                    # new content to add.  
   when: ansible_distribution == "Ubuntu"  
   notify: restart_apache                       # this is the handler name to run when this play changed and finished  
 
